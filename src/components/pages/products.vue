@@ -47,15 +47,15 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="image">輸入圖片網址</label>
-                                    <input type="text" class="form-control" id="image" placeholder="請輸入圖片連結">
+                                    <input type="text" class="form-control" id="image" placeholder="請輸入圖片連結" v-model="tempProduct.imageUrl">
                                 </div>
                                 <div class="form-group">
                                     <label for="customFile">或 上傳圖片
                                         <i class="fas fa-spinner fa-spin"></i>
                                     </label>
-                                    <input type="file" id="customFile" class="form-control" ref="files">
+                                    <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()">
                                 </div>
-                                <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80" class="img-fluid" alt="">
+                                <img :src="tempProduct.imageUrl" class="img-fluid" alt="">
                             </div>
                             <div class="col-sm-8">
                                 <div class="form-group">
@@ -157,7 +157,7 @@
                 const vm = this,
                     api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products`;
                 this.$http.get(api).then((response) => {
-                    console.log(response.data)
+                    // console.log(response.data)
                     vm.products = response.data.products;
                 })
             },
@@ -199,6 +199,25 @@
                         vm.getProducts();
                     }
                 })
+            },
+            uploadFile() {
+                const vm = this;
+                const file = this.$refs.files.files[0],
+                    formData = new FormData();
+                formData.append('file-to-upload', file);
+
+                const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
+                this.$http.post(url, formData, {
+                    headers: {
+                        'Content-type': 'multipart/form-data'
+                    }
+                }).then((response) => {
+                    console.log(response.data);
+                    if (response.data.success) {
+                        vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
+                    }
+                });
+                // console.log(file);
             }
         }
     };

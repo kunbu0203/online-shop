@@ -2,7 +2,9 @@
     <div class="">
         <loading :active.sync="isLoading" />
         <div class="text-right mt-4">
-            <button class="btn btn-primary" @click="openModal('add', {})">建立新的產品</button>
+            <button class="btn btn-primary" @click="openModal('add', {})">
+                建立新的產品
+            </button>
         </div>
         <table class="table mt-4">
             <thead>
@@ -19,37 +21,25 @@
                 <tr v-for="item in products" :key="item.id">
                     <td>{{ item.category }}</td>
                     <td>{{ item.title }}</td>
-                    <td class="text-right">{{ item.origin_price }}</td>
-                    <td class="text-right">{{ item.price }}</td>
+                    <td class="text-right">{{ item.origin_price | currency }}</td>
+                    <td class="text-right">{{ item.price | currency }}</td>
                     <td>
                         <span class="text-success" v-if="item.is_enabled">啟用</span>
                         <span v-else>未啟用</span>
                     </td>
                     <td>
-                        <button class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">編輯</button>
-                        <button class="btn btn-outline-danger btn-sm" @click="openModal('del', item)">刪除</button>
+                        <button class="btn btn-outline-primary btn-sm" @click="openModal('edit', item)">
+                            編輯
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" @click="openModal('del', item)">
+                            刪除
+                        </button>
                     </td>
                 </tr>
             </tbody>
         </table>
         <!-- 分頁 -->
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li :class="['page-item', { 'disabled' : !pagination.has_pre }]">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li :class="['page-item', { 'active' : pagination.current_page === page }]" v-for="page in pagination.total_pages" :key="page">
-                    <a class="page-link" href="#">{{ page }}</a>
-                </li>
-                <li :class="['page-item', { 'disabled' : !pagination.has_next }]">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+        <Pager :pager-data="pagination" @changePage="getProducts"></Pager>
         <!-- popup -->
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -67,44 +57,44 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label for="image">輸入圖片網址</label>
-                                    <input type="text" class="form-control" id="image" placeholder="請輸入圖片連結" v-model="tempProduct.imageUrl">
+                                    <input type="text" class="form-control" id="image" placeholder="請輸入圖片連結" v-model="tempProduct.imageUrl" />
                                 </div>
                                 <div class="form-group">
                                     <label for="customFile">或 上傳圖片
                                         <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                                     </label>
-                                    <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()">
+                                    <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()" />
                                 </div>
-                                <img :src="tempProduct.imageUrl" class="img-fluid" alt="">
+                                <img :src="tempProduct.imageUrl" class="img-fluid" alt="" />
                             </div>
                             <div class="col-sm-8">
                                 <div class="form-group">
                                     <label for="title">標題</label>
-                                    <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="tempProduct.title">
+                                    <input type="text" class="form-control" id="title" placeholder="請輸入標題" v-model="tempProduct.title" />
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="category">分類</label>
-                                        <input type="text" class="form-control" id="category" placeholder="請輸入分類" v-model="tempProduct.category">
+                                        <input type="text" class="form-control" id="category" placeholder="請輸入分類" v-model="tempProduct.category" />
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="price">單位</label>
-                                        <input type="unit" class="form-control" id="unit" placeholder="請輸入單位" v-model="tempProduct.unit">
+                                        <input type="unit" class="form-control" id="unit" placeholder="請輸入單位" v-model="tempProduct.unit" />
                                     </div>
                                 </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="origin_price">原價</label>
-                                        <input type="number" class="form-control" id="origin_price" placeholder="請輸入原價" v-model="tempProduct.origin_price">
+                                        <input type="number" class="form-control" id="origin_price" placeholder="請輸入原價" v-model="tempProduct.origin_price" />
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="price">售價</label>
-                                        <input type="number" class="form-control" id="price" placeholder="請輸入售價" v-model="tempProduct.price">
+                                        <input type="number" class="form-control" id="price" placeholder="請輸入售價" v-model="tempProduct.price" />
                                     </div>
                                 </div>
-                                <hr>
+                                <hr />
 
                                 <div class="form-group">
                                     <label for="description">產品描述</label>
@@ -116,7 +106,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_enabled" v-model="tempProduct.is_enabled" :true-value="1" :false-value="0">
+                                        <input class="form-check-input" type="checkbox" id="is_enabled" v-model="tempProduct.is_enabled" :true-value="1" :false-value="0" />
                                         <label class="form-check-label" for="is_enabled">
                                             是否啟用
                                         </label>
@@ -126,8 +116,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" @click="updateProduct()">確認</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-primary" @click="updateProduct()">
+                            確認
+                        </button>
                     </div>
                 </div>
             </div>
@@ -144,11 +138,17 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        是否刪除 <strong class="text-danger">{{ tempProduct.title }}</strong> 商品(刪除後將無法恢復)。
+                        是否刪除
+                        <strong class="text-danger">{{ tempProduct.title }}</strong>
+                        商品(刪除後將無法恢復)。
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-danger" @click="updateProduct()">確認刪除</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                            取消
+                        </button>
+                        <button type="button" class="btn btn-danger" @click="updateProduct()">
+                            確認刪除
+                        </button>
                     </div>
                 </div>
             </div>
@@ -157,7 +157,8 @@
 </template>
 
 <script>
-    import $ from 'jquery';
+    import $ from "jquery";
+    import Pager from '@/components/pager'
 
     export default {
         name: "",
@@ -166,56 +167,59 @@
                 products: [],
                 pagination: {},
                 tempProduct: {},
-                modalType: '',
+                modalType: "",
                 isLoading: false,
                 status: {
-                    fileUploading: false
-                }
+                    fileUploading: false,
+                },
             };
+        },
+        components: {
+            Pager
         },
         created() {
             const vm = this;
             vm.getProducts();
         },
         methods: {
-            getProducts() {
+            getProducts(page = 1) {
                 const vm = this,
-                    api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products`;
+                    api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products?page=${page}`;
                 vm.isLoading = true;
                 this.$http.get(api).then((response) => {
-                    console.log(response.data)
+                    // console.log(response.data);
                     vm.products = response.data.products;
                     vm.pagination = response.data.pagination;
                     vm.isLoading = false;
-                })
+                });
             },
             openModal(type, item) {
                 const vm = this;
-                let modalName = '#productModal';
-                if (type === 'del') {
-                    modalName = '#delProductModal';
+                let modalName = "#productModal";
+                if (type === "del") {
+                    modalName = "#delProductModal";
                 }
 
                 vm.tempProduct = Object.assign({}, item);
                 vm.modalType = type;
-                $(modalName).modal('show');
+                $(modalName).modal("show");
             },
             updateProduct() {
                 const vm = this;
                 let api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product/${vm.tempProduct.id}`,
-                    apiMethod = 'post',
-                    modalName = '#productModal';
+                    apiMethod = "post",
+                    modalName = "#productModal";
 
                 switch (vm.modalType) {
-                    case 'add':
+                    case "add":
                         api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/product`;
                         break;
-                    case 'edit':
-                        apiMethod = 'put';
+                    case "edit":
+                        apiMethod = "put";
                         break;
-                    case 'del':
-                        apiMethod = 'delete';
-                        modalName = '#delProductModal';
+                    case "del":
+                        apiMethod = "delete";
+                        modalName = "#delProductModal";
                         break;
                     default:
                         break;
@@ -223,34 +227,36 @@
 
                 this.$http[apiMethod](api, { data: vm.tempProduct }).then((response) => {
                     if (response.data.success) {
-                        $(modalName).modal('hide');
+                        $(modalName).modal("hide");
                         vm.getProducts();
                     }
-                })
+                });
             },
             uploadFile() {
                 const vm = this;
                 const file = this.$refs.files.files[0],
                     formData = new FormData();
-                formData.append('file-to-upload', file);
+                formData.append("file-to-upload", file);
 
                 const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
                 vm.status.fileUploading = true;
-                this.$http.post(url, formData, {
-                    headers: {
-                        'Content-type': 'multipart/form-data'
-                    }
-                }).then((response) => {
-                    // console.log(response.data);
-                    vm.status.fileUploading = false;
-                    if (response.data.success) {
-                        vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
-                    } else {
-                        vm.$bus.$emit('message:push', response.data.message, 'danger');
-                    }
-                });
+                this.$http
+                    .post(url, formData, {
+                        headers: {
+                            "Content-type": "multipart/form-data",
+                        },
+                    })
+                    .then((response) => {
+                        // console.log(response.data);
+                        vm.status.fileUploading = false;
+                        if (response.data.success) {
+                            vm.$set(vm.tempProduct, "imageUrl", response.data.imageUrl);
+                        } else {
+                            vm.$bus.$emit("message:push", response.data.message, "danger");
+                        }
+                    });
                 // console.log(file);
-            }
-        }
+            },
+        },
     };
 </script>

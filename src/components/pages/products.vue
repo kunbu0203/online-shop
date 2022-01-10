@@ -1,5 +1,6 @@
 <template>
     <div class="">
+        <loading :active.sync="isLoading" />
         <div class="text-right mt-4">
             <button class="btn btn-primary" @click="openModal('add', {})">建立新的產品</button>
         </div>
@@ -21,7 +22,7 @@
                     <td class="text-right">{{ item.origin_price }}</td>
                     <td class="text-right">{{ item.price }}</td>
                     <td>
-                        <span v-if="item.is_enabled">啟用</span>
+                        <span class="text-success" v-if="item.is_enabled">啟用</span>
                         <span v-else>未啟用</span>
                     </td>
                     <td>
@@ -31,6 +32,25 @@
                 </tr>
             </tbody>
         </table>
+        <!-- 分頁 -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li :class="['page-item', { 'disabled' : !pagination.has_pre }]">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li :class="['page-item', { 'active' : pagination.current_page === page }]" v-for="page in pagination.total_pages" :key="page">
+                    <a class="page-link" href="#">{{ page }}</a>
+                </li>
+                <li :class="['page-item', { 'disabled' : !pagination.has_next }]">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- popup -->
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content border-0">
@@ -51,7 +71,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="customFile">或 上傳圖片
-                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                                     </label>
                                     <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile()">
                                 </div>
@@ -144,8 +164,13 @@
         data() {
             return {
                 products: [],
+                pagination: {},
                 tempProduct: {},
-                modalType: ''
+                modalType: '',
+                isLoading: false,
+                status: {
+                    fileUploading: false
+                }
             };
         },
         created() {
@@ -156,9 +181,12 @@
             getProducts() {
                 const vm = this,
                     api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/products`;
+                vm.isLoading = true;
                 this.$http.get(api).then((response) => {
-                    // console.log(response.data)
+                    console.log(response.data)
                     vm.products = response.data.products;
+                    vm.pagination = response.data.pagination;
+                    vm.isLoading = false;
                 })
             },
             openModal(type, item) {
@@ -207,14 +235,18 @@
                 formData.append('file-to-upload', file);
 
                 const url = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/admin/upload`;
+                vm.status.fileUploading = true;
                 this.$http.post(url, formData, {
                     headers: {
                         'Content-type': 'multipart/form-data'
                     }
                 }).then((response) => {
-                    console.log(response.data);
+                    // console.log(response.data);
+                    vm.status.fileUploading = false;
                     if (response.data.success) {
                         vm.$set(vm.tempProduct, 'imageUrl', response.data.imageUrl)
+                    } else {
+                        vm.$bus.$emit('message:push', response.data.message, 'danger');
                     }
                 });
                 // console.log(file);

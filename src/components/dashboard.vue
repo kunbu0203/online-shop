@@ -2,7 +2,7 @@
     <div class="">
         <Header></Header>
         <SideBar></SideBar>
-
+        <Alert></Alert>
         <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
             <router-view></router-view>
         </main>
@@ -12,6 +12,7 @@
 <script>
     import Header from '@/components/header';
     import SideBar from '@/components/sideBar';
+    import Alert from '@/components/alertMessage';
 
     export default {
         name: "",
@@ -20,7 +21,8 @@
         },
         components: {
             Header,
-            SideBar
+            SideBar,
+            Alert
         },
         created() {
             const myCookie = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/, "$1");

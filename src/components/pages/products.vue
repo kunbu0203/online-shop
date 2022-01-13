@@ -157,8 +157,7 @@
 </template>
 
 <script>
-    import $ from "jquery";
-    import Pager from '@/components/pager'
+    import Pager from '@/components/pager';
 
     export default {
         name: "",

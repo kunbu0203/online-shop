@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import axios from 'axios'
 import Loading from 'vue-loading-overlay'
+import jQuery from 'jquery'
+window.$ = window.jQuery = jQuery
 import 'vue-loading-overlay/dist/vue-loading.css'
 import 'bootstrap'
 
@@ -11,6 +13,7 @@ import VueAxios from 'vue-axios'
 import router from './router'
 import './bus'
 import currencyFilters from './filters/currency'
+import dateFilters from './filters/date'
 
 Vue.config.productionTip = false
 
@@ -18,7 +21,8 @@ Vue.use(VueAxios, axios)
 axios.defaults.withCredentials = true;
 
 Vue.component('Loading', Loading);
-Vue.filter('currency', currencyFilters)
+Vue.filter('currency', currencyFilters);
+Vue.filter('date', dateFilters);
 
 /* eslint-disable no-new */
 new Vue({

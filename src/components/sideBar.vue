@@ -16,7 +16,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" aria-current="page" :to="{name: 'Orders'}">
+                        <router-link class="nav-link active" aria-current="page" :to="{name: 'Coupons'}">
                             <i class="fas fa-ticket-alt"></i>
                             優惠券
                         </router-link>

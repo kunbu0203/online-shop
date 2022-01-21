@@ -5,6 +5,7 @@ import Login from '@/components/pages/login'
 import Products from '@/components/pages/products'
 import Orders from '@/components/pages/orders'
 import Coupons from '@/components/pages/coupons'
+import List from '@/components/pages/shoppingList'
 
 Vue.use(Router)
 
@@ -43,7 +44,11 @@ export default new Router({
             path: '/login',
             name: 'Login',
             component: Login
+        },
+        {
+            path: '/list',
+            name: 'List',
+            component: List
         }
-
     ]
 })

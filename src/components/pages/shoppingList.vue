@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="wrap">
+        <div class="block">
             <div class="col-md-4 mb-4" v-for="item in enabledProducts" :key="item.id">
                 <div class="card border-0 shadow-sm">
                     <div :style="`height: 150px; background-size: cover; background-position: center; background-image: url(${item.imageUrl});`">
@@ -18,12 +18,16 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex">
-                        <button type="button" class="btn btn-outline-secondary btn-sm">
+                        <router-link class="btn btn-outline-secondary btn-sm" :to="`/detail/${item.id}`">
+                            <!-- <i class="fas fa-spinner fa-spin"></i> -->
+                            查看更多
+                        </router-link>
+                        <!-- <button type="button" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-spinner fa-spin"></i>
                             查看更多
-                        </button>
-                        <button type="button" class="btn btn-outline-danger btn-sm ml-auto">
-                            <i class="fas fa-spinner fa-spin"></i>
+                        </button> -->
+                        <button type="button" class="btn btn-outline-danger btn-sm ml-auto" @click="addToCart(item.id)">
+                            <i class="fas fa-spinner fa-spin" v-if="loadingItem === item.id"></i>
                             加到購物車
                         </button>
                     </div>
@@ -38,7 +42,8 @@
         name: "",
         data() {
             return {
-                products: []
+                products: [],
+                loadingItem: ''
             };
         },
         created() {
@@ -54,12 +59,29 @@
             getProducts(page = 1) {
                 const vm = this,
                     api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/products?page=${page}`;
-                vm.isLoading = true;
+                // vm.isLoading = true;
                 this.$http.get(api).then((response) => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     vm.products = response.data.products;
                     // vm.pagination = response.data.pagination;
                     vm.isLoading = false;
+                });
+            },
+            addToCart(id) {
+                const vm = this,
+                    api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
+                const cart = {
+                    product_id: id,
+                    qty: 1
+                }
+
+                vm.loadingItem = id;
+                this.$http.post(api, { data: cart }).then((response) => {
+                    // console.log(response);
+                    if (response.data.success) {
+                        vm.$bus.$emit("message:push", response.data.message);
+                    }
+                    vm.loadingItem = '';
                 });
             }
         }
@@ -67,12 +89,12 @@
 </script>
 
 <style scoped>
-.wrap {
-    box-sizing: border-box;
+.block {
     display: flex;
     flex-wrap: wrap;
-    max-width: 1240px;
-    margin: auto;
-    padding: 20px;
+}
+
+.card {
+    overflow: hidden;
 }
 </style>

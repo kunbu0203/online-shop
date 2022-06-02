@@ -6,7 +6,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button> -->
             <div class="navbar-nav">
-                <div class="nav-item text-nowrap">
+                <div class="nav-item text-nowrap" @click.stop>
                     <a class="nav-link px-4" href="#" @click.prevent="openCart()">
                         <i class="fas fa-shopping-cart"></i>
                     </a>
@@ -32,6 +32,12 @@
                                         <td>{{ item.qty }}</td>
                                         <td>{{ item.total }}</td>
                                     </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>總計</td>
+                                        <td>{{ total }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </li>
@@ -48,8 +54,12 @@
         data() {
             return {
                 carts: [],
-                cartOpen: false
+                cartOpen: false,
+                total: 0
             };
+        },
+        created() {
+            document.addEventListener('click', this.closeCart);
         },
         methods: {
             openCart() {
@@ -57,12 +67,19 @@
                 vm.updateCart();
                 vm.cartOpen = true;
             },
+            closeCart() {
+                const vm = this;
+                if (vm.cartOpen === true) {
+                    vm.cartOpen = false;
+                }
+            },
             updateCart() {
                 const vm = this,
                     api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/cart`;
 
                 this.$http.get(api).then((response) => {
                     vm.carts = response.data.data.carts;
+                    vm.total = response.data.data.total;
                 });
             },
             delCart(id) {
@@ -75,6 +92,9 @@
                         vm.updateCart();
                     }
                 });
+            },
+            useCoupon() {
+
             }
         }
     };

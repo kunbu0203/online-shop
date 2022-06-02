@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex">
-                        <router-link class="btn btn-outline-secondary btn-sm" :to="`/detail/${item.id}`">
+                        <router-link class="btn btn-outline-secondary btn-sm" :to="`/list/detail/${item.id}`">
                             <!-- <i class="fas fa-spinner fa-spin"></i> -->
                             查看更多
                         </router-link>

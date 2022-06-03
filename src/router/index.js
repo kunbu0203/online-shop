@@ -8,6 +8,7 @@ import Coupons from '@/components/pages/coupons'
 import DashboardFront from '@/components/dashboardFront'
 import List from '@/components/pages/shoppingList'
 import Detail from '@/components/pages/productDetail'
+import Checkout from '@/components/pages/checkout'
 
 Vue.use(Router)
 
@@ -60,6 +61,11 @@ export default new Router({
                     path: 'detail/:id',
                     name: 'Detail',
                     component: Detail
+                },
+                {
+                    path: '/checkout',
+                    name: 'Checkout',
+                    component: Checkout
                 }
             ]
         }

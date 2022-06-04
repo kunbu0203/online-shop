@@ -2,14 +2,14 @@
     <div class="">
         <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
             <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">買買買</a>
-            <div class="navbar-nav" v-if="!hideCart">
+            <div class="navbar-nav">
                 <div class="nav-item text-nowrap" @click.stop>
                     <a class="nav-link px-4" href="#" @click.prevent="openCart()">
                         <i class="fas fa-shopping-cart"></i>
                     </a>
                     <div class="cartList shadow p-4" v-if="cartOpen">
                         <Cart></Cart>
-                        <router-link class="btn btn-outline-primary btn-block mt-4" :to="{name: 'Checkout'}">前往結帳</router-link>
+                        <router-link class="btn btn-outline-primary btn-block mt-4" :to="{name: 'Form'}">前往結帳</router-link>
                     </div>
                 </div>
             </div>
@@ -24,8 +24,7 @@
         name: "",
         data() {
             return {
-                cartOpen: false,
-                hideCart: false
+                cartOpen: false
             };
         },
         components: {
@@ -44,16 +43,6 @@
                 const vm = this;
                 if (vm.cartOpen === true) {
                     vm.cartOpen = false;
-                }
-            }
-        },
-        computed: {
-            thisPage() {
-                const vm = this;
-                if(vm.$route.name === 'Checkout') {
-                    vm.hideCart = true;
-                } else {
-                    vm.hideCart = false;
                 }
             }
         }

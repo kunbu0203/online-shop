@@ -8,7 +8,9 @@ import Coupons from '@/components/pages/coupons'
 import DashboardFront from '@/components/dashboardFront'
 import List from '@/components/pages/shoppingList'
 import Detail from '@/components/pages/productDetail'
-import Checkout from '@/components/pages/checkout'
+import DashboardOrder from '@/components/dashboardOrder'
+import Form from '@/components/pages/form'
+import Pay from '@/components/pages/pay'
 
 Vue.use(Router)
 
@@ -61,11 +63,23 @@ export default new Router({
                     path: 'detail/:id',
                     name: 'Detail',
                     component: Detail
+                }
+            ]
+        },
+        {
+            path: '/order',
+            name: 'Order',
+            component: DashboardOrder,
+            children: [
+                {
+                    path: 'form',
+                    name: 'Form',
+                    component: Form
                 },
                 {
-                    path: '/checkout',
-                    name: 'Checkout',
-                    component: Checkout
+                    path: 'pay/:orderId',
+                    name: 'Pay',
+                    component: Pay
                 }
             ]
         }

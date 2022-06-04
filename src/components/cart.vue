@@ -1,12 +1,12 @@
 <template>
     <div>
-        <table class="table table-sm mb-0">
+        <table class="table mb-0">
             <thead>
                 <tr>
                     <th width="40px"></th>
                     <th>品名</th>
-                    <th width="80px">數量</th>
-                    <th width="100px">單價</th>
+                    <th class="text-right" width="80px">數量</th>
+                    <th class="text-right" width="100px">單價</th>
                 </tr>
             </thead>
             <tbody>
@@ -17,20 +17,17 @@
                         </a>
                     </td>
                     <td>{{ item.product.title }}</td>
-                    <td>{{ item.qty }}</td>
-                    <td>{{ item.total }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>總計</td>
-                    <td>{{ data.total }}</td>
+                    <td class="text-right">{{ item.qty }}</td>
+                    <td class="text-right">
+                        <span :class="{'text-del': showFinal}">{{ item.total | currency }}</span>
+                        <span v-if="showFinal">{{ item.final_total | currency }}</span>
+                    </td>
                 </tr>
                 <!-- <tr>
                     <td></td>
                     <td></td>
-                    <td>折扣價<br>(使用折扣碼：{{ data.carts[0].coupon.code }})</td>
-                    <td>{{ data.final_total }}</td>
+                    <td>總計</td>
+                    <td>{{ data.total }}</td>
                 </tr> -->
             </tbody>
         </table>
@@ -40,10 +37,10 @@
 <script>
     export default {
         name: "",
+        props: ['showFinal'],
         data() {
             return {
-                data: [],
-                // couponCode: ''
+                data: []
             };
         },
         created() {
@@ -66,20 +63,10 @@
                     if (response.data.success) {
                         vm.$bus.$emit("message:push", response.data.message);
                         vm.updateCart();
+                        vm.$emit('delCart');
                     }
                 });
-            },
-            // useCoupon() {
-            //     const vm = this,
-            //         api = `${process.env.APIPATH}/api/${process.env.CUSTOMPATH}/coupon`;
-
-            //     this.$http.post(api, { data: { code: vm.couponCode} }).then((response) => {
-            //         if (response.data.success) {
-            //             vm.updateCart();
-            //         }
-            //         vm.$bus.$emit("message:push", response.data.message);
-            //     });
-            // }
+            }
         }
     };
 </script>
@@ -97,5 +84,8 @@
     right: 10px;
     width: 500px;
     background-color: #fff;
+}
+.text-del {
+    text-decoration: line-through;
 }
 </style>

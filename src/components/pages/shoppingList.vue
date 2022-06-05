@@ -7,9 +7,7 @@
                     </div>
                     <div class="card-body">
                         <span class="badge badge-secondary float-right ml-2">{{ item.category }}</span>
-                        <h5 class="card-title">
-                            <a href="#" class="text-dark">{{ item.title }}</a>
-                        </h5>
+                        <h5 class="card-title">{{ item.title }}</h5>
                         <p class="card-text">{{ item.content }}</p>
                         <div class="d-flex justify-content-between align-items-baseline">
                             <!-- <div class="h5">2,800 元</div> -->
